@@ -16,7 +16,7 @@
                 <div class="question-text mb-4">
                     {{ question.text|linebreaks }}
                 </div>
-                <form method="post">
+                <form method="post" id="answer-form">
                     {% csrf_token %}
                     <div class="mb-3">
                         {% if question.type == 'coding' %}
@@ -24,25 +24,20 @@
                             <label for="answer_text" class="form-label mb-0">Your Answer</label>
                             <select id="language-select" class="form-select" style="width: auto;">
                                 <option value="python">Python</option>
-                                <option value="cpp">C++</option>
+                                <option value="text/x-c++src">C++</option>
                             </select>
                         </div>
+                        <textarea id="answer_text" name="answer_text" style="display: none;"></textarea>
                         {% else %}
                         <label for="answer_text" class="form-label">Your Answer</label>
+                        <textarea 
+                            class="form-control"
+                            id="answer_text" 
+                            name="answer_text" 
+                            rows="15" 
+                            required
+                        ></textarea>
                         {% endif %}
-                        <div class="editor-wrapper">
-                            <textarea 
-                                class="form-control {% if question.type == 'coding' %}code-editor{% endif %}" 
-                                id="answer_text" 
-                                name="answer_text" 
-                                rows="15" 
-                                required
-                                {% if question.type == 'coding' %}spellcheck="false"{% endif %}
-                            ></textarea>
-                            {% if question.type == 'coding' %}
-                            <pre class="editor-highlight"><code></code></pre>
-                            {% endif %}
-                        </div>
                     </div>
                     <div class="d-flex justify-content-between">
                         <a href="{% url 'question_list' %}" class="btn btn-secondary">Back to Questions</a>
@@ -55,136 +50,64 @@
 </div>
 
 {% if question.type == 'coding' %}
-<!-- Add Prism.js for syntax highlighting -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+<!-- CodeMirror CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+
+<!-- CodeMirror JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
 
 <style>
-.editor-wrapper {
-    position: relative;
-    height: auto;
-    background-color: #1e1e1e;
+.CodeMirror {
+    height: 400px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
     border-radius: 4px;
-    border: 1px solid #333;
 }
-
-.code-editor {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    color: transparent;
-    background: transparent;
-    caret-color: white;
-    position: relative;
-    z-index: 1;
-    margin: 0;
-    padding: 10px;
-    width: 100%;
-    min-height: 300px;
-    border: none;
-    resize: vertical;
-    tab-size: 4;
-    -moz-tab-size: 4;
-}
-
-.code-editor:focus {
-    outline: none;
-    border: none;
-    box-shadow: none;
-}
-
-.editor-highlight {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: 0;
-    padding: 10px;
-    pointer-events: none;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    background: transparent !important;
-    white-space: pre;
-    overflow-wrap: normal;
-    overflow-x: auto;
-}
-
-.editor-highlight > code {
-    background: transparent !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    font-family: inherit !important;
-    font-size: inherit !important;
-    line-height: inherit !important;
-    tab-size: 4;
-    -moz-tab-size: 4;
-}
-
-/* Override Prism styles for better visibility */
-.token.comment { color: #6a9955 !important; }
-.token.string { color: #ce9178 !important; }
-.token.keyword { color: #569cd6 !important; }
-.token.function { color: #dcdcaa !important; }
-.token.number { color: #b5cea8 !important; }
-.token.operator { color: #d4d4d4 !important; }
-.token.class-name { color: #4ec9b0 !important; }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.getElementById('answer_text');
     const languageSelect = document.getElementById('language-select');
-    const preElement = document.querySelector('.editor-highlight');
-    const codeElement = preElement.querySelector('code');
-    let currentLanguage = languageSelect.value;
-    
-    // Sync scroll between textarea and highlighted code
-    textarea.addEventListener('scroll', () => {
-        preElement.scrollTop = textarea.scrollTop;
-        preElement.scrollLeft = textarea.scrollLeft;
-    });
 
-    // Handle tabs
-    textarea.addEventListener('keydown', function(e) {
-        if (e.key === 'Tab') {
-            e.preventDefault();
-            const start = this.selectionStart;
-            const end = this.selectionEnd;
-            
-            // Insert tab at cursor position
-            this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
-            
-            // Move cursor after tab
-            this.selectionStart = this.selectionEnd = start + 4;
-            
-            // Trigger input event for highlighting
-            updateHighlighting();
+    // Initialize CodeMirror
+    const editor = CodeMirror.fromTextArea(textarea, {
+        mode: 'python',  // default language
+        theme: 'dracula',
+        lineNumbers: true,
+        indentUnit: 4,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        lineWrapping: true,
+        tabSize: 4,
+        indentWithTabs: false,
+        autofocus: true,
+        extraKeys: {
+            "Tab": function(cm) {
+                if (cm.somethingSelected()) {
+                    cm.indentSelection("add");
+                } else {
+                    cm.replaceSelection("    ", "end");
+                }
+            }
         }
     });
 
-    // Update highlighting
-    function updateHighlighting() {
-        const code = textarea.value;
-        codeElement.textContent = code;
-        codeElement.className = `language-${currentLanguage}`;
-        Prism.highlightElement(codeElement);
-    }
-
-    // Real-time updates
-    textarea.addEventListener('input', updateHighlighting);
-    
-    // Language change
-    languageSelect.addEventListener('change', (e) => {
-        currentLanguage = e.target.value;
-        updateHighlighting();
+    // Handle language changes
+    languageSelect.addEventListener('change', function() {
+        editor.setOption('mode', this.value);
     });
 
-    // Initial highlighting
-    updateHighlighting();
+    // Ensure form submission includes editor content
+    document.getElementById('answer-form').addEventListener('submit', function() {
+        editor.save();  // Save editor content back to textarea
+    });
 });
 </script>
 {% endif %}

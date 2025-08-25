@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Answer - LoopAlgo{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">{{ question.title }}</h3>
+                <span class="badge bg-{% if question.type == 'coding' %}primary{% else %}secondary{% endif %}">
+                    {{ question.type|title }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="question-text mb-4">
+                    {{ question.text|linebreaks }}
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="answer_text" class="form-label">Your Answer</label>
+                        <textarea class="form-control" id="answer_text" name="answer_text" rows="10" required></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'question_list' %}" class="btn btn-secondary">Back to Questions</a>
+                        <button type="submit" class="btn btn-primary">Submit Answer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

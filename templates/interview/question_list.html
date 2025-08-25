@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Questions - LoopAlgo{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Available Questions</h2>
+
+<div class="row">
+    {% for question in questions %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <span class="badge bg-{% if question.type == 'coding' %}primary{% else %}secondary{% endif %} float-end">
+                        {{ question.type|title }}
+                    </span>
+                    <h5 class="card-title mb-0">{{ question.title }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ question.text|truncatewords:50 }}</p>
+                </div>
+                <div class="card-footer">
+                    {% if question.id in answered_questions %}
+                        <button class="btn btn-success" disabled>Answered</button>
+                    {% else %}
+                        <a href="{% url 'submit_answer' question.id %}" class="btn btn-primary">Submit Answer</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col">
+            <div class="alert alert-info">
+                No questions available at the moment.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

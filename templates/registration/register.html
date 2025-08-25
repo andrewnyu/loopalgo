@@ -4,22 +4,64 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h2 class="text-center">Register</h2>
+                <h2 class="text-center">Register for LoopAlgo</h2>
             </div>
             <div class="card-body">
-                <form method="post">
+                <form method="post" class="needs-validation" novalidate>
                     {% csrf_token %}
-                    {% for field in form %}
-                        <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                            {{ field.errors }}
-                            {{ field }}
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h4>Account Information</h4>
+                            <hr>
                         </div>
-                    {% endfor %}
-                    <div class="d-grid">
+                        {% for field in user_form %}
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">
+                                    {{ field.label }}
+                                    {% if field.field.required %}*{% endif %}
+                                </label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <div class="form-text">{{ field.help_text }}</div>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h4>Personal Information</h4>
+                            <hr>
+                        </div>
+                        {% for field in profile_form %}
+                            <div class="col-md-{% if field.name in 'competitions,interests,address' %}12{% else %}6{% endif %} mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">
+                                    {{ field.label }}
+                                    {% if field.field.required %}*{% endif %}
+                                </label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <div class="form-text">{{ field.help_text }}</div>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Register</button>
                     </div>
                 </form>
@@ -30,4 +72,52 @@
         </div>
     </div>
 </div>
+
+<style>
+/* Style form inputs */
+.form-control, .form-select {
+    border-radius: 0.375rem;
+}
+
+/* Style form labels */
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Style help text */
+.form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Style required asterisk */
+.form-label:after {
+    content: "*";
+    color: red;
+    margin-left: 4px;
+}
+
+.form-label:not([for*="competitions"]):not([for*="interests"]):not([for*="address"]):after {
+    content: "";
+}
+
+/* Bootstrap form styling */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add Bootstrap classes to all form inputs
+    document.querySelectorAll('input, select, textarea').forEach(function(element) {
+        if (!element.classList.contains('form-control')) {
+            element.classList.add('form-control');
+        }
+    });
+});
+</script>
 {% endblock %}

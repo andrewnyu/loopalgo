@@ -3,51 +3,148 @@
 {% block title %}Submit Answer - LoopAlgo{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title mb-0">{{ question.title }}</h3>
-                <span class="badge bg-{% if question.type == 'coding' %}primary{% else %}secondary{% endif %}">
-                    {{ question.type|title }}
-                </span>
-            </div>
-            <div class="card-body">
-                <div class="question-text mb-4">
-                    {{ question.text|linebreaks }}
+<div id="particles-js" class="particles-container"></div>
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card glass-card">
+                <div class="card-header glass-header">
+                    <h3 class="card-title mb-0">{{ question.title }}</h3>
+                    <span class="badge bg-glow {% if question.type == 'coding' %}bg-primary{% else %}bg-secondary{% endif %}">
+                        {{ question.type|title }}
+                    </span>
                 </div>
-                <form method="post" id="answer-form">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        {% if question.type == 'coding' %}
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <label for="answer_text" class="form-label mb-0">Your Answer</label>
-                            <select id="language-select" class="form-select" style="width: auto;">
-                                <option value="python">Python</option>
-                                <option value="text/x-c++src">C++</option>
-                            </select>
+                <div class="card-body p-4">
+                    <div class="question-text mb-4 text-white">
+                        {{ question.text|linebreaks }}
+                    </div>
+                    <form method="post" id="answer-form">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            {% if question.type == 'coding' %}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label text-white mb-0">Your Solution</label>
+                                <select id="language-select" class="form-select glass-select" style="width: auto;">
+                                    <option value="python">Python</option>
+                                    <option value="text/x-c++src">C++</option>
+                                </select>
+                            </div>
+                            <div id="editor-container" class="code-editor-container"></div>
+                            <textarea id="answer_text" name="answer_text" style="display: none;"></textarea>
+                            {% else %}
+                            <label for="answer_text" class="form-label text-white">Your Answer</label>
+                            <textarea 
+                                class="form-control glass-textarea"
+                                id="answer_text" 
+                                name="answer_text" 
+                                rows="15" 
+                                required
+                            ></textarea>
+                            {% endif %}
                         </div>
-                        <textarea id="answer_text" name="answer_text" style="display: none;"></textarea>
-                        {% else %}
-                        <label for="answer_text" class="form-label">Your Answer</label>
-                        <textarea 
-                            class="form-control"
-                            id="answer_text" 
-                            name="answer_text" 
-                            rows="15" 
-                            required
-                        ></textarea>
-                        {% endif %}
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <a href="{% url 'question_list' %}" class="btn btn-secondary">Back to Questions</a>
-                        <button type="submit" class="btn btn-primary">Submit Answer</button>
-                    </div>
-                </form>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'question_list' %}" class="btn btn-outline-light">Back to Questions</a>
+                            <button type="submit" class="btn btn-glow">Submit Answer</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    position: relative;
+    z-index: 1;
+}
+
+.glass-header {
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1.5rem;
+    border-radius: 15px 15px 0 0;
+}
+
+.glass-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    backdrop-filter: blur(5px);
+}
+
+.glass-select:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.glass-textarea {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    backdrop-filter: blur(5px);
+}
+
+.glass-textarea:focus {
+    background: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1) !important;
+}
+
+.code-editor-container {
+    border-radius: 8px;
+    overflow: hidden;
+    height: 400px;
+}
+
+.btn-glow {
+    background: linear-gradient(45deg, #2196f3, #6f42c1);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+    color: white;
+}
+
+.bg-glow {
+    box-shadow: 0 0 10px rgba(33, 150, 243, 0.4);
+}
+
+.CodeMirror {
+    height: 100%;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    background: rgba(30, 30, 30, 0.9) !important;
+}
+
+/* CodeMirror Theme Overrides */
+.cm-s-dracula.CodeMirror {
+    border-radius: 8px;
+    padding: 10px;
+}
+</style>
 
 {% if question.type == 'coding' %}
 <!-- CodeMirror CSS -->
@@ -61,18 +158,69 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
 
-<style>
-.CodeMirror {
-    height: 400px;
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    border-radius: 4px;
-}
-</style>
+<!-- Particles.js -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize particles
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: '#ffffff' },
+            shape: { type: 'circle' },
+            opacity: {
+                value: 0.5,
+                random: true,
+                animation: {
+                    enable: true,
+                    speed: 1,
+                    opacity_min: 0.1,
+                    sync: false
+                }
+            },
+            size: {
+                value: 3,
+                random: true,
+                animation: {
+                    enable: true,
+                    speed: 2,
+                    size_min: 0.1,
+                    sync: false
+                }
+            },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#ffffff',
+                opacity: 0.2,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 1,
+                direction: 'none',
+                random: true,
+                straight: false,
+                out_mode: 'out',
+                bounce: false,
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: { enable: true, mode: 'grab' },
+                onclick: { enable: true, mode: 'push' },
+                resize: true
+            },
+            modes: {
+                grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                push: { particles_nb: 4 }
+            }
+        },
+        retina_detect: true
+    });
+
     const textarea = document.getElementById('answer_text');
     const languageSelect = document.getElementById('language-select');
 
@@ -107,6 +255,69 @@ document.addEventListener('DOMContentLoaded', function() {
     // Ensure form submission includes editor content
     document.getElementById('answer-form').addEventListener('submit', function() {
         editor.save();  // Save editor content back to textarea
+    });
+});
+</script>
+{% else %}
+<!-- Particles.js -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: '#ffffff' },
+            shape: { type: 'circle' },
+            opacity: {
+                value: 0.5,
+                random: true,
+                animation: {
+                    enable: true,
+                    speed: 1,
+                    opacity_min: 0.1,
+                    sync: false
+                }
+            },
+            size: {
+                value: 3,
+                random: true,
+                animation: {
+                    enable: true,
+                    speed: 2,
+                    size_min: 0.1,
+                    sync: false
+                }
+            },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#ffffff',
+                opacity: 0.2,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 1,
+                direction: 'none',
+                random: true,
+                straight: false,
+                out_mode: 'out',
+                bounce: false,
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: { enable: true, mode: 'grab' },
+                onclick: { enable: true, mode: 'push' },
+                resize: true
+            },
+            modes: {
+                grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                push: { particles_nb: 4 }
+            }
+        },
+        retina_detect: true
     });
 });
 </script>

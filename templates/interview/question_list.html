@@ -76,7 +76,6 @@
                             {{ question.type|title }}
                         </span>
                     </div>
-                    <p class="text-light-muted mb-4">{{ question.text|truncatewords:50 }}</p>
                     <div class="mt-auto">
                         {% if question.id in answered_questions %}
                             <button class="btn btn-success rounded-pill px-4 w-100" disabled>

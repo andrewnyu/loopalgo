@@ -1,37 +1,167 @@
 {% extends 'base.html' %}
 
-{% block title %}Questions - ArchipelAlgo{% endblock %}
+{% block title %}Technical Assessment - ArchipelAlgo{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <h2 class="display-5 mb-4 text-primary fw-bold">Technical Questions</h2>
-    <p class="lead mb-5 text-secondary">Please answer as many questions as you can. 3 correct (or close enough) answers will get you an interview.</p>
+<div id="particles-js" class="particles-container"></div>
 
-    <div class="row">
+<style>
+.particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.content-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.question-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.question-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+}
+
+.card-badge {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    padding: 0.5rem 1rem;
+}
+
+.btn-solve {
+    background: linear-gradient(45deg, #2196f3, #6f42c1);
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-solve:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+}
+
+.text-light-muted {
+    color: rgba(255, 255, 255, 0.8);
+}
+</style>
+<div class="content-wrapper">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="display-4 mb-3 text-white fw-bold">Technical Assessment</h1>
+            <p class="lead text-light-muted">Demonstrate your problem-solving skills. Complete at least 3 challenges to proceed to the interview.</p>
+        </div>
+
+        <div class="row">
     {% for question in questions %}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-header bg-white border-bottom-0 pt-4 px-4">
-                    <span class="badge bg-{% if question.type == 'coding' %}primary{% else %}secondary{% endif %} float-end rounded-pill">
-                        {{ question.type|title }}
-                    </span>
-                    <h5 class="card-title fw-bold mb-0">{{ question.title }}</h5>
-                </div>
-                <div class="card-footer bg-white border-top-0 pb-4 px-4">
-                    {% if question.id in answered_questions %}
-                        <button class="btn btn-success rounded-pill px-4" disabled>Answered</button>
-                    {% else %}
-                        <a href="{% url 'submit_answer' question.id %}" class="btn btn-primary rounded-pill px-4 shadow-sm">Solve</a>
-                    {% endif %}
+            <div class="question-card h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title text-white fw-bold mb-0">{{ question.title }}</h5>
+                        <span class="card-badge badge bg-{% if question.type == 'coding' %}primary{% else %}secondary{% endif %} rounded-pill">
+                            {{ question.type|title }}
+                        </span>
+                    </div>
+                    <p class="text-light-muted mb-4">{{ question.text|truncatewords:50 }}</p>
+                    <div class="mt-auto">
+                        {% if question.id in answered_questions %}
+                            <button class="btn btn-success rounded-pill px-4 w-100" disabled>
+                                <i class="fas fa-check me-2"></i>Completed
+                            </button>
+                        {% else %}
+                            <a href="{% url 'submit_answer' question.id %}" class="btn btn-solve text-white rounded-pill px-4 w-100">
+                                Start Challenge
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
     {% empty %}
-        <div class="col">
-            <div class="alert alert-info">
-                No questions available at the moment.
+        <div class="col-12">
+            <div class="question-card">
+                <div class="card-body p-4 text-center">
+                    <p class="text-light-muted mb-0">No challenges available at the moment. Please check back later.</p>
+                </div>
             </div>
         </div>
     {% endfor %}
 </div>
+
+<!-- Particles.js -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: '#ffffff' },
+            shape: { type: 'circle' },
+            opacity: {
+                value: 0.5,
+                random: true,
+                animation: {
+                    enable: true,
+                    speed: 1,
+                    opacity_min: 0.1,
+                    sync: false
+                }
+            },
+            size: {
+                value: 3,
+                random: true,
+                animation: {
+                    enable: true,
+                    speed: 2,
+                    size_min: 0.1,
+                    sync: false
+                }
+            },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#ffffff',
+                opacity: 0.2,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 1,
+                direction: 'none',
+                random: true,
+                straight: false,
+                out_mode: 'out',
+                bounce: false,
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: { enable: true, mode: 'grab' },
+                onclick: { enable: true, mode: 'push' },
+                resize: true
+            },
+            modes: {
+                grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                push: { particles_nb: 4 }
+            }
+        },
+        retina_detect: true
+    });
+});
+</script>
 {% endblock %}

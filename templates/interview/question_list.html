@@ -1,28 +1,27 @@
 {% extends 'base.html' %}
 
-{% block title %}Questions - LoopAlgo{% endblock %}
+{% block title %}Questions - ArchipelAlgo{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Available Questions</h2>
+<div class="container py-5">
+    <h2 class="display-5 mb-4 text-primary fw-bold">Technical Questions</h2>
+    <p class="lead mb-5 text-secondary">Please answer as many questions as you can. 3 correct (or close enough) answers will get you an interview.</p>
 
-<div class="row">
+    <div class="row">
     {% for question in questions %}
         <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header">
-                    <span class="badge bg-{% if question.type == 'coding' %}primary{% else %}secondary{% endif %} float-end">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+                    <span class="badge bg-{% if question.type == 'coding' %}primary{% else %}secondary{% endif %} float-end rounded-pill">
                         {{ question.type|title }}
                     </span>
-                    <h5 class="card-title mb-0">{{ question.title }}</h5>
+                    <h5 class="card-title fw-bold mb-0">{{ question.title }}</h5>
                 </div>
-                <div class="card-body">
-                    <p class="card-text">{{ question.text|truncatewords:50 }}</p>
-                </div>
-                <div class="card-footer">
+                <div class="card-footer bg-white border-top-0 pb-4 px-4">
                     {% if question.id in answered_questions %}
-                        <button class="btn btn-success" disabled>Answered</button>
+                        <button class="btn btn-success rounded-pill px-4" disabled>Answered</button>
                     {% else %}
-                        <a href="{% url 'submit_answer' question.id %}" class="btn btn-primary">Submit Answer</a>
+                        <a href="{% url 'submit_answer' question.id %}" class="btn btn-primary rounded-pill px-4 shadow-sm">Solve</a>
                     {% endif %}
                 </div>
             </div>

@@ -4,7 +4,15 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 
 class ExtendedUserCreationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    username = forms.CharField(
+        max_length=150,
+        required=True,
+        help_text='Choose a unique username for your account'
+    )
+    email = forms.EmailField(
+        required=True,
+        help_text='Your email address for account recovery'
+    )
     
     class Meta:
         model = User

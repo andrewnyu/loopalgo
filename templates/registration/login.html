@@ -8,45 +8,41 @@
 <div class="container">
     <div class="row justify-content-center align-items-center min-vh-100">
         <div class="col-md-6 col-lg-5">
-            <div class="card glass-card">
-                <div class="card-body p-4 p-sm-5">
-                    <div class="text-center mb-4">
-                        <h1 class="h3 mb-3 fw-bold text-white">Welcome Back</h1>
-                        <p class="text-light-muted">Continue your coding journey</p>
-                    </div>
-
-                    <form method="post" class="needs-validation" novalidate>
-                        {% csrf_token %}
-                        <div class="form-floating mb-3">
-                            <input type="text" name="username" class="form-control glass-input" id="id_username" placeholder="Username" required>
-                            <label for="id_username">Username</label>
-                        </div>
-                        <div class="form-floating mb-4">
-                            <input type="password" name="password" class="form-control glass-input" id="id_password" placeholder="Password" required>
-                            <label for="id_password">Password</label>
-                        </div>
-
-                        {% if form.errors %}
-                            <div class="alert alert-danger" role="alert">
-                                Invalid username or password.
-                            </div>
-                        {% endif %}
-
-                        <div class="d-grid">
-                            <button class="btn btn-glow btn-lg" type="submit">
-                                Sign In
-                            </button>
-                        </div>
-
-                        <div class="text-center mt-4">
-                            <p class="text-light-muted">
-                                Don't have an account? 
-                                <a href="{% url 'register' %}" class="link-glow">Register here</a>
-                            </p>
-                        </div>
-                    </form>
-                </div>
+            <div class="text-center mb-5">
+                <h1 class="display-4 mb-3 fw-bold text-white">Welcome Back</h1>
+                <p class="lead text-light-muted">Continue your coding journey</p>
             </div>
+
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                <div class="form-floating mb-4">
+                    <input type="text" name="username" class="form-control" id="id_username" placeholder="Username" required>
+                    <label for="id_username">Username</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" name="password" class="form-control" id="id_password" placeholder="Password" required>
+                    <label for="id_password">Password</label>
+                </div>
+
+                {% if form.errors %}
+                    <div class="invalid-feedback d-block mb-4 text-center">
+                        Invalid username or password.
+                    </div>
+                {% endif %}
+
+                <div class="d-grid mb-4">
+                    <button class="btn btn-glow btn-lg" type="submit">
+                        Sign In
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <p class="text-light-muted">
+                        Don't have an account? 
+                        <a href="{% url 'register' %}" class="link-glow">Register here</a>
+                    </p>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -61,89 +57,142 @@
     z-index: 0;
 }
 
-.glass-card {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 15px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+.form-floating {
+    background-color: transparent;
 }
 
-.glass-input {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+input.form-control {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
     color: white !important;
-    backdrop-filter: blur(5px);
+    border-radius: 0 !important;
+    padding: 1.25rem 0 0.5rem !important;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+    font-weight: 400;
 }
 
-.glass-input:focus {
-    background: rgba(255, 255, 255, 0.25) !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
-    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.2) !important;
+input.form-control:focus {
+    border-bottom-color: #2196f3 !important;
+    box-shadow: none !important;
 }
 
-.form-floating > .glass-input ~ label {
-    color: rgba(255, 255, 255, 0.9);
-    padding-left: 1rem;
+.form-floating > label {
+    color: rgba(255, 255, 255, 0.5);
+    padding-left: 0;
+    font-weight: 400;
+    font-size: 0.9rem;
+    letter-spacing: 0.3px;
+    transform: translateY(0.75rem);
+    background-color: transparent;
 }
 
-.form-floating > .glass-input:focus ~ label,
-.form-floating > .glass-input:not(:placeholder-shown) ~ label {
-    color: rgba(255, 255, 255, 1);
-    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-    background: rgba(0, 0, 0, 0.1);
-    padding: 0 0.5rem;
-    border-radius: 4px;
+.form-floating > label::after {
+    display: none;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: rgba(255, 255, 255, 0.7);
+    transform: scale(0.85) translateY(-0.5rem);
+    background: transparent;
+    padding: 0;
+    font-weight: 500;
+    border: none;
+    text-shadow: none;
+}
+
+/* Override Bootstrap's floating label background */
+.form-floating > .form-control:focus ~ label::after,
+.form-floating > .form-control:not(:placeholder-shown) ~ label::after,
+.form-floating > .form-control ~ label::after {
+    background-color: transparent !important;
+    border: none !important;
 }
 
 .btn-glow {
-    background: linear-gradient(45deg, #2196f3, #6f42c1);
+    background: linear-gradient(135deg, #2196f3, #6f42c1);
     border: none;
     color: white;
-    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.75px;
+    font-size: 0.95rem;
+    padding: 0.75rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-glow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+    transition: opacity 0.3s ease;
+    opacity: 0;
 }
 
 .btn-glow:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
     color: white;
 }
 
+.btn-glow:hover::before {
+    opacity: 1;
+}
+
 .text-light-muted {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+    letter-spacing: 0.2px;
 }
 
 .link-glow {
     color: #2196f3;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     font-weight: 600;
+    position: relative;
+    padding: 0.25rem 0;
+}
+
+.link-glow::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(90deg, #2196f3, #6f42c1);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
 }
 
 .link-glow:hover {
     color: #64b5f6;
-    text-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
+}
+
+.link-glow:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
 /* Form validation styles */
 .invalid-feedback {
     color: #ff7875;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-    background: rgba(255, 0, 0, 0.1);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 0, 0, 0.2);
-}
-
-.alert-danger {
-    background: rgba(255, 0, 0, 0.1);
-    border: 1px solid rgba(255, 0, 0, 0.2);
-    color: #ff7875;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    padding: 0.25rem 0;
+    font-weight: 500;
+    letter-spacing: 0.2px;
 }
 </style>
 

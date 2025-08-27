@@ -16,6 +16,9 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+# Admin URL configuration
+ADMIN_URL = os.getenv('DJANGO_ADMIN_URL', 'admin/')
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',

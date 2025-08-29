@@ -12,7 +12,7 @@
         <div class="hero-content">
             <h1 class="fade-in">ArchipelAlgo - Discovering Filipino Tech Talent</h1>
             <p class="lead slide-up">Solve challenges to showcase your skills and land a job to help build the Philippines' tech future.</p>
-            <a href="{% url 'register' %}" class="cta-button scale-in">Code Now</a>
+            <a href="{% if user.is_authenticated %}{% url 'question_list' %}{% else %}{% url 'register' %}{% endif %}" class="cta-button scale-in">Code Now</a>
         </div>
         <div class="hero-image slide-in">
             <div class="code-window">
@@ -57,7 +57,7 @@
     <section class="cta-section fade-in-section">
         <h2>Ready to Show Your Expertise?</h2>
         <p>Be part of the next generation of Filipino tech talent</p>
-        <a href="{% url 'register' %}" class="cta-button">Start Coding</a>
+        <a href="{% if user.is_authenticated %}{% url 'question_list' %}{% else %}{% url 'register' %}{% endif %}" class="cta-button">Start Coding</a>
     </section>
 </div>
 

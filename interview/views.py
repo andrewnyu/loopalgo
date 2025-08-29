@@ -22,7 +22,7 @@ def register(request):
                     profile.save()
                     
                     messages.success(request, 'Registration successful! Please log in.')
-                    return redirect('login')
+                    return redirect('question_list')
             except Exception as e:
                 messages.error(request, f'An error occurred during registration. Please try again.')
                 user_form = ExtendedUserCreationForm()
